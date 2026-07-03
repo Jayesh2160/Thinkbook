@@ -42,6 +42,8 @@ interface BurndownData {
   idealPoints: number;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const COLORS = ['#6366f1', '#f59e0b', '#3b82f6', '#10b981'];
 
 export const AnalyticsDashboard: React.FC = () => {
@@ -63,10 +65,10 @@ export const AnalyticsDashboard: React.FC = () => {
 
       try {
         const [statusRes, velocityRes, timeRes, burndownRes] = await Promise.all([
-          fetch(`http://localhost:5000/api/analytics/status/${activeProject._id}`, { headers }),
-          fetch(`http://localhost:5000/api/analytics/velocity/${activeProject._id}`, { headers }),
-          fetch(`http://localhost:5000/api/analytics/time/${activeProject._id}`, { headers }),
-          fetch(`http://localhost:5000/api/analytics/burndown/${activeProject._id}`, { headers }),
+          fetch(`${API_URL}/analytics/status/${activeProject._id}`, { headers }),
+          fetch(`${API_URL}/analytics/velocity/${activeProject._id}`, { headers }),
+          fetch(`${API_URL}/analytics/time/${activeProject._id}`, { headers }),
+          fetch(`${API_URL}/analytics/burndown/${activeProject._id}`, { headers }),
         ]);
 
         const [status, velocity, time, burndown] = await Promise.all([

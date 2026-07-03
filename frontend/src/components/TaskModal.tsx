@@ -19,6 +19,8 @@ interface Comment {
   createdAt: string;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 export const TaskModal: React.FC<TaskModalProps> = ({ task, onClose }) => {
   const { user } = useAuthStore();
   const {
@@ -73,7 +75,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ task, onClose }) => {
     setLoadingComments(true);
     const token = localStorage.getItem('thinkbook_token');
     try {
-      const res = await fetch(`http://localhost:5000/api/comments/task/${task._id}`, {
+      const res = await fetch(`${API_URL}/comments/task/${task._id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -118,7 +120,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ task, onClose }) => {
 
     const token = localStorage.getItem('thinkbook_token');
     try {
-      const res = await fetch('http://localhost:5000/api/comments', {
+      const res = await fetch(`${API_URL}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
