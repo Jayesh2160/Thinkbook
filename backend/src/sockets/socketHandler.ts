@@ -64,7 +64,20 @@ export const setupSocketHandler = (io: Server) => {
       io.to(`user_${requesterId}`).emit('help:notification-updated', helpRequest);
     });
 
-    // 6. Handle Disconnect
+    // 6. Real-Time Chat Messaging
+    socket.on('chat:send', (message) => {
+      if (message.project) {
+        const projectId = message.project._id || message.project;
+        io.to(`project_${projectId}`).emit('chat:message', message);
+      } else if (message.receiver) {
+        const receiverId = message.receiver._id || message.receiver;
+        const senderId = message.sender._id || message.sender;
+        io.to(`user_${receiverId}`).emit('chat:message', message);
+        io.to(`user_${senderId}`).emit('chat:message', message);
+      }
+    });
+
+    // 7. Handle Disconnect
     socket.on('disconnect', () => {
       const { projectId, viewingTaskId } = socket.data;
       if (viewingTaskId && projectId) {

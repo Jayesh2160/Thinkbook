@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { io, Socket } from 'socket.io-client';
+import { useChatStore } from './useChatStore';
 
 interface UserShort {
   id: string;
@@ -119,6 +120,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
     socket.on('help:updated', () => {
       // Trigger project refresh
+    });
+
+    socket.on('chat:message', (message) => {
+      useChatStore.getState().receiveMessage(message);
     });
 
     set({ socket });

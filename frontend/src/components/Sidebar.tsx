@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useBoardStore } from '../store/useBoardStore';
 import { useAuthStore } from '../store/useAuthStore';
-import { Folder, Users, Plus, LogOut, ChevronRight, LayoutGrid, CheckCircle } from 'lucide-react';
+import { Folder, Users, Plus, LogOut, ChevronRight, LayoutGrid, CheckCircle, MessageSquare } from 'lucide-react';
+import { useChatStore } from '../store/useChatStore';
 
 interface SidebarProps {
-  onTabChange: (tab: 'board' | 'analytics') => void;
-  activeTab: 'board' | 'analytics';
+  onTabChange: (tab: 'board' | 'analytics' | 'chat') => void;
+  activeTab: 'board' | 'analytics' | 'chat';
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ onTabChange, activeTab }) => {
@@ -68,6 +69,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ onTabChange, activeTab }) => {
       }, 2000);
     }
   };
+
+  const { unreadCounts } = useChatStore();
+  const totalUnread = Object.values(unreadCounts).reduce((acc, count) => acc + count, 0);
 
   return (
     <aside className="w-64 shrink-0 glass-panel border-r border-slate-800/80 p-6 flex flex-col h-screen overflow-y-auto">
@@ -179,6 +183,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ onTabChange, activeTab }) => {
                   src={member.avatarUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${member.name}`}
                   alt={member.name}
                   title={member.name}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${member.name}`;
+                  }}
                 />
               ))}
             </div>
@@ -207,6 +214,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ onTabChange, activeTab }) => {
             >
               <Users className="w-4 h-4" />
               Analytics Dashboard
+            </button>
+            <button
+              onClick={() => onTabChange('chat')}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all relative ${
+                activeTab === 'chat'
+                  ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/20'
+                  : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-200 border border-transparent'
+              }`}
+            >
+              <MessageSquare className="w-4 h-4" />
+              <span>Chat with Mate</span>
+              {totalUnread > 0 && (
+                <span className="ml-auto bg-indigo-500 text-slate-100 text-[10px] px-1.5 py-0.5 rounded-full font-bold animate-pulse">
+                  {totalUnread}
+                </span>
+              )}
             </button>
           </div>
 

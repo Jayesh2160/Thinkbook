@@ -7,6 +7,7 @@ import { createTask, getProjectTasks, updateTask, logTime, deleteTask } from '..
 import { createComment, getTaskComments } from '../controllers/commentController';
 import { createHelpRequest, updateHelpStatus, getMyHelpRequests, getProjectHelpRequests } from '../controllers/helpController';
 import { getStatusDistribution, getTeamVelocity, getTimeTracking, getBurndownData } from '../controllers/analyticsController';
+import { getWorkspaceDMs, getProjectMessages, sendChatMessage } from '../controllers/chatController';
 
 const router = Router();
 
@@ -42,6 +43,11 @@ router.patch('/help-requests/:requestId', authenticate, updateHelpStatus);
 router.get('/help-requests/my', authenticate, getMyHelpRequests);
 router.get('/help-requests/project/:projectId', authenticate, getProjectHelpRequests);
 
+// Chat routes
+router.get('/chats/workspace/:workspaceId/dm/:mateId', authenticate, getWorkspaceDMs);
+router.get('/chats/workspace/:workspaceId/project/:projectId', authenticate, getProjectMessages);
+router.post('/chats', authenticate, sendChatMessage);
+
 // Analytics routes
 router.get('/analytics/status/:projectId', authenticate, getStatusDistribution);
 router.get('/analytics/velocity/:projectId', authenticate, getTeamVelocity);
@@ -49,3 +55,4 @@ router.get('/analytics/time/:projectId', authenticate, getTimeTracking);
 router.get('/analytics/burndown/:projectId', authenticate, getBurndownData);
 
 export default router;
+

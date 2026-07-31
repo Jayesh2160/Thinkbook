@@ -7,12 +7,13 @@ import { Navbar } from './components/Navbar';
 import { KanbanBoard } from './components/KanbanBoard';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { TaskModal } from './components/TaskModal';
+import { ChatSection } from './components/ChatSection';
 
 export const App: React.FC = () => {
   const { isAuthenticated, user, fetchMe, isLoading } = useAuthStore();
   const { initSocket, disconnectSocket, fetchWorkspaces, error, clearError } = useBoardStore();
 
-  const [activeTab, setActiveTab] = useState<'board' | 'analytics'>('board');
+  const [activeTab, setActiveTab] = useState<'board' | 'analytics' | 'chat'>('board');
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   useEffect(() => {
@@ -80,8 +81,10 @@ export const App: React.FC = () => {
         {/* Dynamic Panels */}
         {activeTab === 'board' ? (
           <KanbanBoard onOpenDetails={handleOpenTaskDetails} />
-        ) : (
+        ) : activeTab === 'analytics' ? (
           <AnalyticsDashboard />
+        ) : (
+          <ChatSection />
         )}
       </div>
 
